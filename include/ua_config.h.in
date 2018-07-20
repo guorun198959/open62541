@@ -60,6 +60,15 @@ extern "C" {
 #cmakedefine UA_DEBUG
 #cmakedefine UA_DEBUG_DUMP_PKGS
 
+/* Select default architecture if non is selected through CMake or compiler define */
+#if ${UA_ARCHITECTURES_NODEF}
+# ifdef _WIN32
+#  define UA_ARCHITECTURE_WIN32
+# else
+#  define UA_ARCHITECTURE_POSIX
+# endif
+#endif
+
 #include "ua_architecture.h"
 
 /**

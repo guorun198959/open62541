@@ -112,6 +112,18 @@ if(${UA_ARCHITECTURE} STREQUAL "None")
   message(FATAL_ERROR "No architecture was selected. Please select the architecture of your target platform")
 endif(${UA_ARCHITECTURE} STREQUAL "None")
 
+# Create a list of ifdefs for all the architectures.
+# This is needed to enable a default architecture if none is selected through gcc compiler def.
+# Especially if someone is using the amalgamated file on Linux/Windows he should not need to define an architecture.
+GET_PROPERTY(architectures GLOBAL PROPERTY UA_ARCHITECTURES)
+list(SORT architectures)
+set(UA_ARCHITECTURES_NODEF "1 ") #to make it easier to append later the && symbol
+foreach(arch ${architectures})
+    string(TOUPPER ${arch} UA_ARCHITECTURE_UPPER)
+    set(UA_ARCHITECTURES_NODEF "${UA_ARCHITECTURES_NODEF} && !defined(UA_ARCHITECTURE_${UA_ARCHITECTURE_UPPER})")
+endforeach(arch ${architectures})
+
+
 # Options
 set(UA_LOGLEVEL 300 CACHE STRING "Level at which logs shall be reported")
 option(UA_ENABLE_HISTORIZING "Enable server to provide historical access." ON)
